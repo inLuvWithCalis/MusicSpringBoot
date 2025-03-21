@@ -17,4 +17,16 @@ public class ArtistService {
     public List<Artist> findAllArtists() {
         return artistRepository.findAll();
     }
+
+    public Artist findArtistByName(String name) {
+        return artistRepository.findByName(name);
+    }
+
+    public Artist findArtistByID(long id) {
+        return artistRepository.findArtistById(id);
+    }
+
+    public void saveArtist(Artist artist) {
+        artistRepository.save(artist);
+    }
 }

@@ -1,5 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -32,66 +34,57 @@
 </head>
 
 <body>
-<div class="container mx-auto">
+<div class="container mx-auto mt-5">
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <div class="card">
                 <div class="card-body">
                     <h2 class="card-title text-center">Add Songs</h2>
-                    <form action="addproduct">
-                        <p class="text-danger text-lg-start">${error}</p>
+                    <form:form action="/admin/add" method="post" modelAttribute="newSong" enctype="multipart/form-data">
                         <div class="form-group row">
-                            <label for="first_name" class="col-sm-3 col-form-label">Id</label>
+                            <label for="title" class="col-sm-3 col-form-label">Title:</label>
                             <div class="col-sm-9">
-                                <input type="number" class="form-control" id="first_name" name="id" required>
+                                <form:input type="text" class="form-control" path="title" required=""/>
                             </div>
                         </div>
+
                         <div class="form-group row">
-                            <label for="last_name" class="col-sm-3 col-form-label">Name</label>
+                            <label class="col-sm-3 col-form-label">Artist:</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="last_name" name="name" required>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="birthday" class="col-sm-3 col-form-label">Image</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="birthday" name="image" required>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="email" class="col-sm-3 col-form-label">Price</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="email" name="price" required>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="phone" class="col-sm-3 col-form-label">Tittle</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="phone" name="title" required>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="phone" class="col-sm-3 col-form-label">Description</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="phone" name="description" required>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Category</label>
-                            <div class="col-sm-9">
-                                <select class="form-control" id="subject" name="categoryName" required>
+                                <select class="form-control" name="artistId" required="">
                                     <option disabled selected>Choose option</option>
-                                    <option>Vegetable</option>
-                                    <option>Fruit</option>
+                                    <c:forEach var="artist" items="${artists}">
+                                        <option value="${artist.id}">${artist.name}</option>
+                                    </c:forEach>
                                 </select>
                             </div>
                         </div>
+
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Quantity</label>
+                            <label class="col-sm-3 col-form-label">Album:</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" name="quantity" required>
+                                <select class="form-control" name="albumId" required="">
+                                    <option disabled selected>Choose option</option>
+                                    <c:forEach var="album" items="${albums}">
+                                        <option value="${album.id}">${album.title}</option>
+                                    </c:forEach>
+                                </select>
                             </div>
                         </div>
+
+                        <div class="form-group row">
+                            <label for="fileUrl" class="col-sm-3 col-form-label">File upload</label>
+                            <div class="col-sm-9">
+                                <input type="file" class="form-control" id="fileUrl" name="songFile" accept=".mp3, .wav, .flac, .aac, .ogg"/>
+                            </div>
+                            <div class="col-sm-9">
+                                <audio controls id="musicPreview" style="display: none;">
+                                    <source id="musicSource" src="" type="">
+                                    Your browser does not support
+                                </audio>
+                            </div>
+                        </div>
+
                         <div class="form-group row">
                             <div class="col-sm-9 offset-sm-3">
                                 <button class="btn btn-primary btn-secondary btn-lg custom-btn">
@@ -101,7 +94,8 @@
                                 <button type="submit" class="btn btn-primary btn-primary btn-lg">Submit</button>
                             </div>
                         </div>
-                    </form>
+
+                    </form:form>
                 </div>
             </div>
         </div>
@@ -110,6 +104,23 @@
 
 <!-- Bootstrap JS -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(() => {
+        const fileInput = $("#fileUrl"); // Lấy input file
+        fileInput.change(function (e) {
+            const file = e.target.files[0]; // Lấy file người dùng chọn
+            if (file) {
+                const audioURL = URL.createObjectURL(file); // Tạo URL tạm thời cho file nhạc
+
+                $("#musicSource").attr("src", audioURL); // Cập nhật source của audio
+                $("#musicSource").attr("type", file.type);
+                $("#musicPreview").css({ "display": "block" }); // Hiển thị trình phát nhạc
+                $("#musicPreview")[0].load(); // Load lại audio để phát đúng file
+            }
+        });
+    });
+
+</script>
 </body>
 
 </html>

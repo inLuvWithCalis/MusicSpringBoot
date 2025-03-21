@@ -17,4 +17,8 @@ public class SongService {
     public List<Song> findAllSongs() {
         return songRepository.findAll();
     }
+
+    public void Save(Song song) {
+        songRepository.save(song);
+    }
 }

@@ -5,7 +5,6 @@ import com.example.musicstore.service.AlbumService;
 import com.example.musicstore.service.ArtistService;
 import com.example.musicstore.service.SongService;
 import com.example.musicstore.service.UploadService;
-import jakarta.servlet.ServletContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -61,9 +60,7 @@ public class SongController {
         song.setFileUrl(audio);
         song.setTitle(song.getTitle());
 
-//        artistService.saveArtist(artistService.findArtistByID(artistId));
-//        albumService.saveAlbum(albumService.findAlbumByTitle(song.getAlbum().getTitle()));
         songService.Save(song);
-        return "redirect:/admin/song";
+        return "redirect:/admin/manage ";
     }
 }

@@ -14,27 +14,31 @@
         <div class="d-flex justify-content-between">
             <div class="top-info ps-2 top-link pe-2">
                 <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i> <a href="https://www.google.com/maps/@21.0126108,105.5172847,16z?entry=ttu" target="_blank" class="text-white">Block 4, Thach Hoa, Thach That, Ha Noi</a></small>
-                <c:set value="${sessionScope.account}" var="a"></c:set>
-                <c:if test="${a.isAdmin == 1}">
                     <small class="me-3"><i class="fas fa-user me-2 text-secondary">
                     </i><a href="" class="text-white mx-2">
-                        Welcome ${a.user}!</a>
+                        Welcome ${googleName}!</a>
                     </small>
-                    <small class="me-3"><i class="fas fa-sign-out-alt me-2 text-secondary">
-                    </i><a href="logout" class="text-white mx-2">
-                        Log out</a>
-                    </small>
-                </c:if>
-                <c:if test="${a.isAdmin == 0}">
-                    <small class="me-3"><i class="fas fa-user me-2 text-secondary">
-                    </i><a href="" class="text-dark fw-bolder">
-                        Welcome ${a.user}!</a>
-                    </small>
-                    <small class="me-3"><i class="fas fa-sign-out-alt me-2 text-secondary">
-                    </i><a href="logout" class="text-white mx-2">
-                        Log out</a>
-                    </small>
-                </c:if>
+                <form method="POST" action="/logout" class="d-inline">
+                    <button type="submit" class="btn btn-secondary">
+                        <i class="fas fa-sign-out-alt me-2 text-light"></i> Logout
+                    </button>
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                </form>
+
+            <%--                    <small class="me-3"><i class="fas fa-sign-out-alt me-2 text-secondary">--%>
+<%--                    </i><a href="logout" class="text-white mx-2">--%>
+<%--                        Log out</a>--%>
+<%--                    </small>--%>
+<%--                <c:if test="${a.isAdmin == 0}">--%>
+<%--                    <small class="me-3"><i class="fas fa-user me-2 text-secondary">--%>
+<%--                    </i><a href="" class="text-dark fw-bolder">--%>
+<%--                        Welcome ${a.user}!</a>--%>
+<%--                    </small>--%>
+<%--                    <small class="me-3"><i class="fas fa-sign-out-alt me-2 text-secondary">--%>
+<%--                    </i><a href="logout" class="text-white mx-2">--%>
+<%--                        Log out</a>--%>
+<%--                    </small>--%>
+<%--                </c:if>--%>
             </div>
             <div class="top-link pe-2">
                 <a href="#" class="text-white"><small class="text-white mx-2">Privacy Policy</small>/</a>
@@ -56,7 +60,7 @@
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Management</a>
                         <div class="dropdown-menu m-0 bg-secondary rounded-0">
-                            <a href="/admin/song" class="dropdown-item active">Songs</a>
+                            <a href="/admin/manage" class="dropdown-item active">Songs</a>
                             <a href="" class="dropdown-item">Account</a>
                         </div>
                     </div>

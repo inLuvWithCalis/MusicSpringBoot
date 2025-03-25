@@ -26,16 +26,16 @@
 </head>
 <body>
 <div class="container">
-    <div class="row">
-        <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
-            <div class="card border-0 shadow rounded-3 my-5">
-                <div class="card-body p-4 p-sm-5">
-                    <div class="d-grid mb-2">
-                        <a href="https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=http://localhost:8080/grantcode&response_type=code&client_id=531645436515-2mg9jvalkcbginkebebhqk07mt3m5msd.apps.googleusercontent.com&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+openid&access_type=offline"
-                           class="btn btn-outline-danger btn-login text-uppercase fw-bolder">
-                            <i class="fab fa-google"></i> Sign up with Google
-                        </a>
-                    </div>
+    <div class="col-sm-9 col-md-7 col-lg-5 mx-auto my-auto">
+        <div class="card border-0 shadow rounded-3 my-5">
+            <div class="card-body p-4 p-sm-5">
+                <div class="d-grid mb-2">
+                    <form class="text-center" action="/oauth2/authorization/google" method="GET">
+                        <button type="submit" class="px-3 py-2 btn btn-primary btn-lg">
+                            <i class="fab fa-google"></i>
+                            Sign in with Google
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

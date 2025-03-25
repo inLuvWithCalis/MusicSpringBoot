@@ -5,7 +5,7 @@
     <div class="container px-0">
         <nav class="navbar navbar-light bg-white navbar-expand-xl">
             <a href="/home" class="navbar-brand">
-                <h1 class="text-black-50 display-6">FileUpload</h1>
+                <h1 class="text-black-50 display-6 border-dark">FileUpload</h1>
             </a>
             <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarCollapse">
@@ -20,8 +20,8 @@
                     </a>
                     <!-- menu -->
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                        <li><a class="dropdown-item bg-light text-dark" href="/">Name</a></li>
-                        <li><a class="dropdown-item bg-light text-dark" href="/">Email</a></li>
+                        <li><a class="dropdown-item bg-light text-dark" href="#">${sessionScope.name}</a></li>
+                        <li><a class="dropdown-item bg-light text-dark" href="#">${sessionScope.email}</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>

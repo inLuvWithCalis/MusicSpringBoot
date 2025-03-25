@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="input" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="ftm" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -21,26 +22,56 @@
             <div class="col-lg-8">
                 <div class="card">
                     <div class="card-body">
-                        <h2 class="card-title text-center mb-4">Add Files</h2>
-                        <form:form action="/auth/add" method="post" enctype="multipart/form-data">
+                        <h2 class="card-title text-center mb-4">Update File</h2>
+                        <form action="/auth/edit" method="post" enctype="multipart/form-data">
                             <!-- Get submit form time -->
-                            <input type="hidden" id="submitTime" name="submitTime"/>
+                            <input type="hidden" id="submitTime" name="id" value="${editingFile.id}"/>
 
-<%--                            <div class="form-group row">--%>
-<%--                                <label class="col-sm-3 col-form-label">Title</label>--%>
+                            <div class="form-group row mt-5">
+                                <label class="col-sm-3 col-form-label">Filename:</label>
+                                <div class="col-sm-9">
+                                    <label>
+                                        <input type="text" class="form-control" name="name" value="${editingFile.name}" style="width: 350px;" required=""/>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group row mt-5">
+                                <label class="col-sm-3 col-form-label">Type:</label>
+                                <div class="col-sm-9">
+                                    <label>
+                                        <input type="text" class="form-control" name="type" value="${editingFile.type}"
+                                               style="width: 350px;" required="" readonly="readonly"/>
+                                    </label>
+                                </div>
+                            </div>
+
+<%--                            <div class="form-group row mt-5">--%>
+<%--                                <label class="col-sm-3 col-form-label">Path:</label>--%>
 <%--                                <div class="col-sm-9">--%>
-<%--                                    <label>--%>
-<%--                                        <form:input class="form-control" path="name" style="width: 350px;" required=""/>--%>
-<%--                                    </label>--%>
+<%--                                    <a href="${editingFile.path}" class="btn btn-outline-primary" download>--%>
+<%--                                        Download File--%>
+<%--                                    </a>--%>
 <%--                                </div>--%>
 <%--                            </div>--%>
+
+                            <div class="form-group row mt-5">
+                                <label class="col-sm-3 col-form-label">Created at:</label>
+                                <div class="col-sm-9">
+                                    <label>
+                                        <input type="text" class="form-control" name="createdAt"
+                                               value="${formattedCreatedAt}"
+                                               style="width: 350px;" required="" readonly="readonly"/>
+                                    </label>
+                                </div>
+                            </div>
 
                             <div class="form-group row mt-5">
                                 <label class="col-sm-3 col-form-label">File upload</label>
                                 <div class="col-sm-9">
                                     <label class="custom-file">
                                         <input type="file" name="hiddenFile" id="file" style="display: none;" class="form-control">
-                                        <input type="text" name="shownFile" id="text" class="form-control" style="width: 350px;"
+                                        <input type="text" value="${editingFile.name}" name="shownFile" id="text" class="form-control" style="width: 350px;"
                                                placeholder="No file selected" readonly="readonly"/>
                                     </label>
                                     <label for="file">
@@ -60,7 +91,7 @@
                                     <button type="submit" class="btn btn-primary btn-primary btn-lg">Submit</button>
                                 </div>
                             </div>
-                        </form:form>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -73,10 +104,5 @@
     document.getElementById("file").addEventListener("change", function(event) {
         let fileName = event.target.files[0].name;
         document.getElementById("text").value = event.target.files.length > 0 ? fileName : "No file selected";
-    });
-
-    document.querySelector("form").addEventListener("submit", function() {
-       let present = new Date();
-        document.getElementById("submitTime").value = present.toISOString();
     });
 </script>

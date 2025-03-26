@@ -77,7 +77,7 @@ public class FileService {
     }
 
 
-    public void saveFileToDatabase(MultipartFile file, User user) {
+    public void saveFileToDatabase(MultipartFile file, User user, String changedFileName) {
         try {
             Path uploadPath = Paths.get(UPLOAD_DIRECTORY);
             if (!Files.exists(uploadPath)) {
@@ -89,7 +89,11 @@ public class FileService {
             Files.copy(file.getInputStream(), filePath);
 
             File fileToSave = new File();
-            fileToSave.setName(fileName);
+            if (changedFileName == null || changedFileName.isEmpty()) {
+                fileToSave.setName(fileName);
+            } else {
+                fileToSave.setName(changedFileName);
+            }
             fileToSave.setPath("/upload/" + fileName);
             fileToSave.setType(file.getContentType());
             fileToSave.setCreatedAt(new Date());

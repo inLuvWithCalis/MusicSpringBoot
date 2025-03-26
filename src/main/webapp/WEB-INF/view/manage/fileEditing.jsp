@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Sweet Alert 2-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -26,7 +28,14 @@
                         <form action="/auth/edit" method="post" enctype="multipart/form-data">
                             <!-- Get submit form time -->
                             <input type="hidden" id="submitTime" name="id" value="${editingFile.id}"/>
-
+<%--                            <div class="form-group row mt-5">--%>
+<%--                                <label class="col-sm-3 col-form-label">Path:</label>--%>
+<%--                                <div class="col-sm-9">--%>
+<%--                                    <a href="${editingFile.path}" class="btn btn-outline-primary" download>--%>
+<%--                                        Download File--%>
+<%--                                    </a>--%>
+<%--                                </div>--%>
+<%--                            </div>--%>
                             <div class="form-group row mt-5">
                                 <label class="col-sm-3 col-form-label">Filename:</label>
                                 <div class="col-sm-9">
@@ -45,15 +54,6 @@
                                     </label>
                                 </div>
                             </div>
-
-<%--                            <div class="form-group row mt-5">--%>
-<%--                                <label class="col-sm-3 col-form-label">Path:</label>--%>
-<%--                                <div class="col-sm-9">--%>
-<%--                                    <a href="${editingFile.path}" class="btn btn-outline-primary" download>--%>
-<%--                                        Download File--%>
-<%--                                    </a>--%>
-<%--                                </div>--%>
-<%--                            </div>--%>
 
                             <div class="form-group row mt-5">
                                 <label class="col-sm-3 col-form-label">Created at:</label>
@@ -104,5 +104,21 @@
     document.getElementById("file").addEventListener("change", function(event) {
         let fileName = event.target.files[0].name;
         document.getElementById("text").value = event.target.files.length > 0 ? fileName : "No file selected";
+    });
+
+    document.getElementById("file").addEventListener("change", function() {
+        let filePath = document.getElementById("file").value;
+        let allowedExtensions = [".mp3", ".wav", ".ogg", ".flac"];
+
+        if (!allowedExtensions.includes(filePath.substring(filePath.lastIndexOf(".")))) {
+            swal.fire({
+                title: 'Error',
+                text: 'Error: Accepted file types are mp3, wav, ogg, flac,..',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            document.getElementById("text").value = "";
+            filePath = "";
+        }
     });
 </script>

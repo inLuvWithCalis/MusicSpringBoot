@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Sweet Alert 2-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -26,25 +28,29 @@
                             <!-- Get submit form time -->
                             <input type="hidden" id="submitTime" name="submitTime"/>
 
-<%--                            <div class="form-group row">--%>
-<%--                                <label class="col-sm-3 col-form-label">Title</label>--%>
-<%--                                <div class="col-sm-9">--%>
-<%--                                    <label>--%>
-<%--                                        <form:input class="form-control" path="name" style="width: 350px;" required=""/>--%>
-<%--                                    </label>--%>
-<%--                                </div>--%>
-<%--                            </div>--%>
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">Name</label>
+                                <div class="col-sm-9">
+                                    <label>
+                                        <input class="form-control" name="name" style="width: 350px;"
+                                               placeholder="Fill your file name"/>
+                                    </label>
+                                </div>
+                            </div>
 
                             <div class="form-group row mt-5">
                                 <label class="col-sm-3 col-form-label">File upload</label>
-                                <div class="col-sm-9">
-                                    <label class="custom-file">
-                                        <input type="file" name="hiddenFile" id="file" style="display: none;" class="form-control">
+                                <div class="row col-sm-9">
+                                    <label class="custom-file col-sm-8">
+                                        <input type="file" name="hiddenFile" id="file" style="display: none;" class="form-control"
+                                               accept=".mp3, .wav, .ogg, .flac"/>
                                         <input type="text" name="shownFile" id="text" class="form-control" style="width: 350px;"
                                                placeholder="No file selected" readonly="readonly"/>
+                                        <span class="error-message small mb-1" style="color: red">${error}</span>
                                     </label>
-                                    <label for="file">
-                                        <span id="file-name" class="file-box"></span>
+                                    <label for="file" class="col-sm-4 text-start mt-2">
+                                        <span id="file-name" class="file-box">
+                                        </span>
                                         <span class="file-button">
                                           <i class="fa fa-upload" aria-hidden="true"></i>
                                           Select File
@@ -75,8 +81,20 @@
         document.getElementById("text").value = event.target.files.length > 0 ? fileName : "No file selected";
     });
 
-    document.querySelector("form").addEventListener("submit", function() {
-       let present = new Date();
-        document.getElementById("submitTime").value = present.toISOString();
+    document.getElementById("file").addEventListener("change", function() {
+        let filePath = document.getElementById("file").value;
+        let allowedExtensions = [".mp3", ".wav", ".ogg", ".flac"];
+
+        if (!allowedExtensions.includes(filePath.substring(filePath.lastIndexOf(".")))) {
+            swal.fire({
+                title: 'Error',
+                text: 'Error: Accepted file types are mp3, wav, ogg, flac,..',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            document.getElementById("text").value = "";
+            filePath = "";
+
+        }
     });
 </script>

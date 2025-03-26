@@ -19,7 +19,8 @@
                         <i class="fas fa-user fa-2x text-black-50 my-auto"></i>
                     </a>
                     <!-- menu -->
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                    <ul class="dropdown-menu dropdown-menu-end text-center" aria-labelledby="userDropdown">
+                        <li><img class="img-fluid rounded-circle" src="${sessionScope.picture}" alt=""></li>
                         <li><a class="dropdown-item bg-light text-dark" href="#">${sessionScope.name}</a></li>
                         <li><a class="dropdown-item bg-light text-dark" href="#">${sessionScope.email}</a></li>
                         <li>

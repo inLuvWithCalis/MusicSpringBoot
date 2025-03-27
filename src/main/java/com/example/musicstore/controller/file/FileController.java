@@ -8,8 +8,10 @@ import com.example.musicstore.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,7 +41,8 @@ public class FileController {
 
     @GetMapping({"/home", "/"})
     public String getHome(Model model, @AuthenticationPrincipal OAuth2User principal, HttpServletRequest request
-            ) {
+    , @RequestParam(defaultValue = "0", value = "page") int page
+    , @RequestParam(defaultValue = "2", value = "size") int size) {
 
         // Setup session.
         HttpSession session = request.getSession();
@@ -48,10 +52,15 @@ public class FileController {
             session.setAttribute("picture", principal.getAttribute("picture"));
         }
 
-        // Get all files.
+        // Get all files and pagination.
         User activeUser = this.userService.findByEmail(principal.getAttribute("email"));
-        List<File> files = fileService.getAllFilesByUser(activeUser);
-        model.addAttribute("files", files);
+        Page<File> files = fileService.getAllByUser(activeUser, page, size);
+//        List<File> files = fileService.getAllFilesByUser(activeUser);
+
+        // Pass list of files to the UI.
+        model.addAttribute("files", files.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", files.getTotalPages());
 
         // Saved user to DB when they logged in success.
         this.userService.saveUser(principal);
@@ -59,16 +68,29 @@ public class FileController {
         return "homepage/index";
     }
 
+    @GetMapping("/auth/page")
+    public String getPageIndex(Model model, HttpSession session,
+                               @RequestParam("page") int page,
+                               @RequestParam(defaultValue = "2", value = "size") int size) {
+        String email = (String) session.getAttribute("email");
+        User user = userService.findByEmail(email);
+        Page<File> files = fileService.getAllByUser(user, page, size);
+        model.addAttribute("files", files.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", files.getTotalPages());
+        return "homepage/index";
+    }
+
     @GetMapping("/auth/add")
-    public String getAddFilePage(Model model) {
+    public String getAddFilePage() {
         return "manage/fileAdding";
     }
 
     @PostMapping("/auth/add")
     public String AddFileToDB(@RequestParam("hiddenFile") MultipartFile hiddenFile,
                               @RequestParam("shownFile") String shownFile,
-                              @ModelAttribute("newFile") File file,
-                              @RequestParam("name") String changedFileName,
+                              @Valid @ModelAttribute("newFile") File file,
+                              @RequestParam("name") String name,
                               Model model,
                               HttpSession session) {
         // get session.
@@ -83,8 +105,14 @@ public class FileController {
             return "manage/fileAdding";
         }
 
+        if ((name != null) || !name.isEmpty()) {
+            if (!this.fileService.isFileNameUnique(name)) {
+                model.addAttribute("errorName", "File name already exists!");
+                return "manage/fileAdding";
+            }
+        }
         // save file to db.
-        this.fileService.saveFileToDatabase(hiddenFile, user, changedFileName);
+        this.fileService.saveFileToDatabase(hiddenFile, user, name);
         return "redirect:/home";
     }
 

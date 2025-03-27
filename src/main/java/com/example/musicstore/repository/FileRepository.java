@@ -7,7 +7,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
+import java.util.Optional;
+
 @Repository
 public interface FileRepository extends JpaRepository<File, Long> {
-//    Page<File> findAllFilesByUser(User user, Pageable pageable);
+    Page<File> findAllFilesByUser(User user, Pageable pageable);
+
+    Optional<File> findFileByName(String fileName);
 }

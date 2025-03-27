@@ -33,8 +33,14 @@ public class FileService {
                 -> f.getUser().equals(user)).collect(Collectors.toList());
     }
 
-    public List<File> getAllFiles() {
-        return fileRepository.findAll();
+    public void deleteFilePathById(long id) {
+        File existingFile = this.fileRepository.findById(id).orElse(null);
+        Path oldFilePath = Paths.get("src/main/resources/static" + existingFile.getPath()).toAbsolutePath();
+        try {
+            Files.deleteIfExists(oldFilePath);
+        } catch (IOException e) {
+            throw new RuntimeException("Making error while deleting file: " + e.getMessage());
+        }
     }
 
     public void updateFile(long id, String newName, MultipartFile newFile) {
@@ -59,19 +65,14 @@ public class FileService {
 
                 // Set up the file TYPE.
                 existingFile.setType(newFile.getContentType());
+                existingFile.setPath("/upload/" + updatedFileName);
             } else {
                 // Remain the same file name if user just renames the file.
-                String fileExtension = existingFile.getName().substring(existingFile.getName().lastIndexOf("."));
-                updatedFileName = newName + fileExtension;
-                newFilePath = oldFilePath.getParent().resolve(updatedFileName);
-
-                // rename the file.
-                Files.move(oldFilePath, newFilePath, StandardCopyOption.REPLACE_EXISTING);
+                updatedFileName = newName;
             }
 
             // Update DB.
             existingFile.setName(updatedFileName);
-            existingFile.setPath("/upload/" + updatedFileName);
             existingFile.setCreatedAt(new Date());
             fileRepository.save(existingFile);
         } catch (IOException e) {
@@ -118,4 +119,13 @@ public class FileService {
         return this.fileRepository.findById(id).orElse(null);
     }
 
+    public boolean isFileNameUnique(String fileName) {
+        return this.fileRepository.findFileByName(fileName).isEmpty();
+    }
+
+    // Page processing.
+    public Page<File> getAllByUser(User user, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return this.fileRepository.findAllFilesByUser(user, pageable);
+    }
 }

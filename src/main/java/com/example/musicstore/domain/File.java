@@ -1,5 +1,4 @@
 package com.example.musicstore.domain;
-
 import jakarta.persistence.*;
 
 import java.util.Date;

@@ -1,4 +1,4 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="ftm" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
@@ -36,14 +36,17 @@
                     </thead>
                     <tbody>
                     <c:forEach items="${files}" var="f" varStatus="status">
-                        <tr class="align-middle" onclick="window.location.href='/auth/detail/${f.id}'" style="cursor: pointer;">
+                        <tr class="align-middle" onclick="window.location.href='/auth/detail/${f.id}'"
+                            style="cursor: pointer;">
                             <td class="text-center align align-middle">${status.index + 1}</td>
                             <td class="text-center align align-middle">${f.name}</td>
                             <td class="text-center align align-middle">${f.type}</td>
                             <td class="text-center align align-middle">${f.path}</td>
-                            <td class="text-center align align-middle"><ftm:formatDate value="${f.createdAt}" pattern="yyyy/MM/dd HH:mm:ss"/></td>
+                            <td class="text-center align align-middle"><ftm:formatDate value="${f.createdAt}"
+                                                                                       pattern="yyyy/MM/dd HH:mm:ss"/></td>
                             <td class="d-flex justify-content-lg-center">
-                                <a onclick="confirmDelete('${f.id}', '${status.index + 1}');event.stopPropagation();" class="btn btn-danger mx-auto px-1">Delete</a>
+                                <a onclick="confirmDelete('${f.id}', '${status.index + 1}');event.stopPropagation();"
+                                   class="btn btn-danger mx-auto px-1">Delete</a>
                                 <a href="/auth/edit?id=${f.id}" class="btn btn-success mx-auto px-1">Edit</a>
                             </td>
                         </tr>
@@ -54,6 +57,20 @@
         </div>
     </div>
 </div>
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        <li class="page-item disabled">
+            <a class="page-link">Previous</a>
+        </li>
+        <li class="page-item"><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">2</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item">
+            <a class="page-link" href="#">Next</a>
+        </li>
+    </ul>
+</nav>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     function confirmDelete(id, index) {
@@ -65,7 +82,7 @@
             cancelButtonText: 'No',
             reverseButtons: true
         }).then((result) => {
-            if(result.isConfirmed) {
+            if (result.isConfirmed) {
                 window.location.href = '/auth/delete?id=' + id;
             } else {
                 window.location.href = 'redirect:/home';

@@ -4,6 +4,9 @@ import com.example.musicstore.domain.File;
 import com.example.musicstore.domain.User;
 import com.example.musicstore.repository.FileRepository;
 import jakarta.servlet.ServletContext;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -113,5 +116,10 @@ public class FileService {
 
     public File getFileById(long id) {
         return this.fileRepository.findById(id).orElse(null);
+    }
+
+    // Pagination processing.
+    public Page<File> fetchFiles(Pageable pageable) {
+        return this.fileRepository.findAllFiles(pageable);
     }
 }

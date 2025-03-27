@@ -37,7 +37,8 @@ public class FileController {
     }
 
     @GetMapping({"/home", "/"})
-    public String getHome(Model model, @AuthenticationPrincipal OAuth2User principal, HttpServletRequest request) {
+    public String getHome(Model model, @AuthenticationPrincipal OAuth2User principal, HttpServletRequest request
+            , @RequestParam("page") int page) {
 
         // Setup session.
         HttpSession session = request.getSession();

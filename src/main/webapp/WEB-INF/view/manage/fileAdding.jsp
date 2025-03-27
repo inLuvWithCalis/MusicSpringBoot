@@ -34,6 +34,7 @@
                                     <label>
                                         <input class="form-control" name="name" style="width: 350px;"
                                                placeholder="Fill your file name"/>
+                                        <span class="error-message small mb-1" style="color: red">${errorName}</span>
                                     </label>
                                 </div>
                             </div>
@@ -93,8 +94,7 @@
                 confirmButtonText: 'OK'
             });
             document.getElementById("text").value = "";
-            filePath = "";
-
+            document.getElementById("file").value = "";
         }
     });
 </script>

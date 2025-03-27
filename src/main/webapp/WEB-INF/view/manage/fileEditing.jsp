@@ -40,7 +40,8 @@
                                 <label class="col-sm-3 col-form-label">Filename:</label>
                                 <div class="col-sm-9">
                                     <label>
-                                        <input type="text" class="form-control" name="name" value="${editingFile.name}" style="width: 350px;" required=""/>
+                                        <input type="text" class="form-control" name="name" value="${editingFile.name}" style="width: 350px;"/>
+                                        <span class="error-message small mb-1" style="color: red">${errorName}</span>
                                     </label>
                                 </div>
                             </div>
@@ -118,7 +119,7 @@
                 confirmButtonText: 'OK'
             });
             document.getElementById("text").value = "";
-            filePath = "";
+            document.getElementById("file").value = "";
         }
     });
 </script>

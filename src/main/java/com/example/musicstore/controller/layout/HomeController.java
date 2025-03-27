@@ -23,6 +23,7 @@ public class HomeController {
 
     @GetMapping("/auth/delete")
     public String getDeletedList(@RequestParam("id") long id) {
+        this.fileService.deleteFilePathById(id);
         this.fileService.removeFileById(id);
         return "redirect:/home";
     }
@@ -41,9 +42,26 @@ public class HomeController {
     @PostMapping("/auth/edit")
     public String editFile(@RequestParam("id") long id,
                            @RequestParam("name") String name,
+                           Model model,
                            @RequestParam("hiddenFile") MultipartFile hiddenFile) {
-        File editedFile = this.fileService.getFileById(id);
-        this.fileService.updateFile(id, name, hiddenFile);
+
+        File editingFile = fileService.getFileById(id);
+        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String formattedDate = outputFormat.format(editingFile.getCreatedAt());
+        model.addAttribute("editingFile", editingFile);
+        model.addAttribute("formattedCreatedAt", formattedDate);
+
+        if (name == null || name.isEmpty()) {
+            model.addAttribute("errorName", "File name is empty!");
+            return "manage/fileEditing";
+        }
+
+        if (!fileService.isFileNameUnique(name)) {
+            model.addAttribute("errorName", "File name already exists!");
+            return "manage/fileEditing";
+        }
+
+        fileService.updateFile(id, name, hiddenFile);
         return "redirect:/home";
     }
 

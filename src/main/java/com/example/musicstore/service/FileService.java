@@ -118,8 +118,4 @@ public class FileService {
         return this.fileRepository.findById(id).orElse(null);
     }
 
-    // Pagination processing.
-    public Page<File> fetchFiles(Pageable pageable) {
-        return this.fileRepository.findAllFiles(pageable);
-    }
 }

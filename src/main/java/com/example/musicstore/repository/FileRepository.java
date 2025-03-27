@@ -9,7 +9,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface FileRepository extends JpaRepository<File, Long> {
-    Page<File> findAllFiles(Pageable pageable);
-
-    Page<File> findAllFilesByUser(User user, Pageable pageable);
+//    Page<File> findAllFilesByUser(User user, Pageable pageable);
 }

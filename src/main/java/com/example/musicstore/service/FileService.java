@@ -1,12 +1,14 @@
 package com.example.musicstore.service;
 
 import com.example.musicstore.domain.File;
+import com.example.musicstore.domain.File_;
 import com.example.musicstore.domain.User;
 import com.example.musicstore.repository.FileRepository;
-import jakarta.servlet.ServletContext;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -127,5 +129,20 @@ public class FileService {
     public Page<File> getAllByUser(User user, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return this.fileRepository.findAllFilesByUser(user, pageable);
+    }
+
+    private Specification<File> getFileNameSpecification(String name, User user) {
+        return (root, query, cb) -> {
+            Predicate predicate = cb.conjunction();
+            predicate = cb.and(predicate, cb.like(root.get(File_.NAME), "%" + name + "%"));
+            predicate = cb.and(predicate, cb.equal(root.get(File_.USER), user));
+            return predicate;
+        };
+    }
+
+    // fetch all items by user and name.
+    public Page<File> fetchAllByUser(User user, int page, int size, String name) {
+        Pageable pageable = PageRequest.of(page, size);
+        return this.fileRepository.findAll(getFileNameSpecification(name, user), pageable);
     }
 }

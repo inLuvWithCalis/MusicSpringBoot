@@ -55,7 +55,6 @@ public class FileController {
         // Get all files and pagination.
         User activeUser = this.userService.findByEmail(principal.getAttribute("email"));
         Page<File> files = fileService.getAllByUser(activeUser, page, size);
-//        List<File> files = fileService.getAllFilesByUser(activeUser);
 
         // Pass list of files to the UI.
         model.addAttribute("files", files.getContent());
@@ -134,5 +133,17 @@ public class FileController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getName() + "\"")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(resource);
+    }
+
+    // Search files
+    @PostMapping("/auth/search")
+    public String searchFile(Model model, @RequestParam("keyword") String name, HttpSession session) {
+        // get session.
+        String email = (String) session.getAttribute("email");
+        Page<File> files = fileService.fetchAllByUser(userService.findByEmail(email), 0, 2, name);
+        model.addAttribute("files", files.getContent());
+        model.addAttribute("currentPage", 0);
+        model.addAttribute("totalPages", files.getTotalPages());
+        return "homepage/index";
     }
 }

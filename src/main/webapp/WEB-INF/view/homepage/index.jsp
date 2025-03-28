@@ -19,10 +19,25 @@
 <div class="container-fluid py-5" style="margin-top: 150px;">
     <div class="container py-5">
         <div class="text-center">
-            <div class="container-fluid text-end">
-                <a class="btn btn-primary btn-md px-4 py-2 mb-5 text-white" href="/auth/add">Upload File</a>
+            <div class="container-fluid mb-5">
+                <div class="row">
+                    <div class="col-md-6 text-start">
+                        <button class="btn btn-dark btn-md px-4 py-2 mb-5 text-white dropdown-toggle"
+                                data-bs-toggle="dropdown">Filter
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/">xxx</a></li>
+                            <li><a class="dropdown-item" href="/">yyy</a></li>
+                            <li><a class="dropdown-item" href="/">zzz</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <a class="btn btn-primary btn-md px-4 py-2 mb-5 text-white" href="/auth/add">Upload File</a>
+                    </div>
+                </div>
             </div>
-            <div class="table-responsive">
+
+            <div class="table-responsive mt-5">
                 <table class="table table-hover">
                     <thead>
                     <tr>
@@ -30,7 +45,13 @@
                         <th scope="col" class="text-center">Filename</th>
                         <th scope="col" class="text-center">Type</th>
                         <th scope="col" class="text-center">Path</th>
-                        <th scope="col" class="text-center">CreatedAt</th>
+                        <th scope="col" class="text-center">
+                            <button class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">CreatedAt</button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Ascending</a></li>
+                                <li><a class="dropdown-item" href="#">Descending</a></li>
+                            </ul>
+                        </th>
                         <th scope="col" class="text-center">Action</th>
                     </tr>
                     </thead>

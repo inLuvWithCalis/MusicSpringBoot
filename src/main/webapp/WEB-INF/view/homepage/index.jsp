@@ -1,4 +1,4 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="ftm" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
@@ -26,9 +26,16 @@
                                 data-bs-toggle="dropdown">Filter
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/">xxx</a></li>
-                            <li><a class="dropdown-item" href="/">yyy</a></li>
-                            <li><a class="dropdown-item" href="/">zzz</a></li>
+                            <li><a class="dropdown-item"
+                                   href="/auth/filter?type=mpeg&sortOrder=${sortOrder}&search=${search}">mpeg</a></li>
+                            <li><a class="dropdown-item"
+                                   href="/auth/filter?type=wav&sortOrder=${sortOrder}&search=${search}">wav</a></li>
+                            <li><a class="dropdown-item"
+                                   href="/auth/filter?type=ogg&sortOrder=${sortOrder}&search=${search}">ogg</a></li>
+                            <li><a class="dropdown-item"
+                                   href="/auth/filter?type=flac&sortOrder=${sortOrder}&search=${search}">flac</a></li>
+                            <li><a class="dropdown-item"
+                                   href="/auth/filter?type=mp4&sortOrder=${sortOrder}&search=${search}">mp4</a></li>
                         </ul>
                     </div>
                     <div class="col-md-6 text-end">
@@ -48,8 +55,11 @@
                         <th scope="col" class="text-center">
                             <button class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">CreatedAt</button>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Ascending</a></li>
-                                <li><a class="dropdown-item" href="#">Descending</a></li>
+                                <li><a class="dropdown-item"
+                                       href="/auth/sort?sortOrder=asc&search=${search}&type=${type}">Ascending</a></li>
+                                <li><a class="dropdown-item"
+                                       href="/auth/sort?sortOrder=desc&search=${search}&type=${type}">Descending</a>
+                                </li>
                             </ul>
                         </th>
                         <th scope="col" class="text-center">Action</th>
@@ -57,14 +67,17 @@
                     </thead>
                     <tbody>
                     <c:forEach items="${files}" var="f" varStatus="status">
-                        <tr class="align-middle" onclick="window.location.href='/auth/detail/${f.id}'" style="cursor: pointer;">
+                        <tr class="align-middle" onclick="window.location.href='/auth/detail/${f.id}'"
+                            style="cursor: pointer;">
                             <td class="text-center align align-middle">${status.index + 1}</td>
                             <td class="text-center align align-middle">${f.name}</td>
                             <td class="text-center align align-middle">${f.type}</td>
                             <td class="text-center align align-middle">${f.path}</td>
-                            <td class="text-center align align-middle"><ftm:formatDate value="${f.createdAt}" pattern="yyyy/MM/dd HH:mm:ss"/></td>
+                            <td class="text-center align align-middle"><ftm:formatDate value="${f.createdAt}"
+                                                                                       pattern="yyyy/MM/dd HH:mm:ss"/></td>
                             <td class="d-flex justify-content-lg-center">
-                                <a onclick="confirmDelete('${f.id}', '${status.index + 1}');event.stopPropagation();" class="btn btn-danger mx-auto px-1">Delete</a>
+                                <a onclick="confirmDelete('${f.id}', '${status.index + 1}');event.stopPropagation();"
+                                   class="btn btn-danger mx-auto px-1">Delete</a>
                                 <a href="/auth/edit?id=${f.id}" class="btn btn-success mx-auto px-1">Edit</a>
                             </td>
                         </tr>
@@ -81,19 +94,22 @@
     <ul class="pagination justify-content-center">
         <c:if test="${currentPage > 0}">
             <li class="page-item">
-                <a class="page-link" href="/auth/page?page=${currentPage - 1}">Previous</a>
+                <a class="page-link"
+                   href="/auth/page?page=${currentPage - 1}&sortOrder=${sortOrder}&search=${search}&type=${type}">Previous</a>
             </li>
         </c:if>
         <c:if test="${totalPages > 0}">
             <c:forEach begin="0" end="${totalPages - 1}" var="i">
                 <li class="page-item ${currentPage == i ? 'active' : ''}">
-                    <a class="page-link" href="/auth/page?page=${i}">${i + 1}</a>
+                    <a class="page-link"
+                       href="/auth/page?page=${i}&sortOrder=${sortOrder}&search=${search}&type=${type}">${i + 1}</a>
                 </li>
             </c:forEach>
         </c:if>
         <c:if test="${currentPage + 1 < totalPages}">
             <li class="page-item">
-                <a class="page-link" href="/auth/page?page=${currentPage + 1}">Next</a>
+                <a class="page-link"
+                   href="/auth/page?page=${currentPage + 1}&sortOrder=${sortOrder}&search=${search}&type=${type}">Next</a>
             </li>
         </c:if>
     </ul>
@@ -110,7 +126,7 @@
             cancelButtonText: 'No',
             reverseButtons: true
         }).then((result) => {
-            if(result.isConfirmed) {
+            if (result.isConfirmed) {
                 window.location.href = '/auth/delete?id=' + id;
             } else {
                 window.location.href = 'redirect:/home';

@@ -1,4 +1,4 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="input" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
@@ -43,9 +43,11 @@
                                 <label class="col-sm-3 col-form-label">File upload</label>
                                 <div class="row col-sm-9">
                                     <label class="custom-file col-sm-8">
-                                        <input type="file" name="hiddenFile" id="file" style="display: none;" class="form-control"
+                                        <input type="file" name="hiddenFile" id="file" style="display: none;"
+                                               class="form-control"
                                                accept=".mp3, .wav, .ogg, .flac"/>
-                                        <input type="text" name="shownFile" id="text" class="form-control" style="width: 350px;"
+                                        <input type="text" name="shownFile" id="text" class="form-control"
+                                               style="width: 350px;"
                                                placeholder="No file selected" readonly="readonly"/>
                                         <span class="error-message small mb-1" style="color: red">${error}</span>
                                     </label>
@@ -77,14 +79,17 @@
 </body>
 </html>
 <script>
-    document.getElementById("file").addEventListener("change", function(event) {
+    document.getElementById("file").addEventListener("change", function (event) {
         let fileName = event.target.files[0].name;
         document.getElementById("text").value = event.target.files.length > 0 ? fileName : "No file selected";
     });
 
-    document.getElementById("file").addEventListener("change", function() {
+    document.getElementById("file").addEventListener("change", function () {
         let filePath = document.getElementById("file").value;
-        let allowedExtensions = [".mp3", ".wav", ".ogg", ".flac"];
+        let allowedExtensions = [
+            ".mp3", ".wav", ".ogg", ".flac", ".aac", ".m4a", ".wma", ".aiff", ".alac", ".amr",
+            ".mid", ".midi", ".mpa", ".opus", ".ra", ".rm", ".tta", ".voc", ".wv"
+        ];
 
         if (!allowedExtensions.includes(filePath.substring(filePath.lastIndexOf(".")))) {
             swal.fire({

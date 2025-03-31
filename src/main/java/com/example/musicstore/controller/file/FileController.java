@@ -41,8 +41,8 @@ public class FileController {
 
     @GetMapping({"/home", "/"})
     public String getHome(Model model, @AuthenticationPrincipal OAuth2User principal, HttpServletRequest request
-    , @RequestParam(defaultValue = "0", value = "page") int page
-    , @RequestParam(defaultValue = "2", value = "size") int size) {
+            , @RequestParam(defaultValue = "0", value = "page") int page
+            , @RequestParam(defaultValue = "2", value = "size") int size) {
 
         // Setup session.
         HttpSession session = request.getSession();
@@ -70,13 +70,19 @@ public class FileController {
     @GetMapping("/auth/page")
     public String getPageIndex(Model model, HttpSession session,
                                @RequestParam("page") int page,
-                               @RequestParam(defaultValue = "2", value = "size") int size) {
+                               @RequestParam(defaultValue = "asc", value = "sortOrder") String sortOrder,
+                               @RequestParam(required = false) String search,
+                               @RequestParam(defaultValue = "2", value = "size") int size,
+                               @RequestParam("type") String type) {
         String email = (String) session.getAttribute("email");
         User user = userService.findByEmail(email);
-        Page<File> files = fileService.getAllByUser(user, page, size);
+        Page<File> files = this.fileService.getFilteredFiles(user, page, size, search, sortOrder, type);
         model.addAttribute("files", files.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", files.getTotalPages());
+        model.addAttribute("sortOrder", sortOrder);
+        model.addAttribute("search", search);
+        model.addAttribute("type", type);
         return "homepage/index";
     }
 
@@ -137,13 +143,57 @@ public class FileController {
 
     // Search files
     @PostMapping("/auth/search")
-    public String searchFile(Model model, @RequestParam("keyword") String name, HttpSession session) {
+    public String searchFile(Model model, @RequestParam("keyword") String name,
+                             @RequestParam(defaultValue = "asc", value = "sortOrder") String sortOrder,
+                             @RequestParam(defaultValue = "2", value = "size") int size,
+                             @RequestParam(required = false, value = "type") String type,
+                             HttpSession session) {
         // get session.
         String email = (String) session.getAttribute("email");
-        Page<File> files = fileService.fetchAllByUser(userService.findByEmail(email), 0, 2, name);
+        User user = userService.findByEmail(email);
+        Page<File> files = fileService.getFilteredFiles(user, 0, size, name, sortOrder, null);
         model.addAttribute("files", files.getContent());
         model.addAttribute("currentPage", 0);
         model.addAttribute("totalPages", files.getTotalPages());
+        model.addAttribute("search", name);
+        model.addAttribute("type", type);
+        return "homepage/index";
+    }
+
+    // sort by createdAt
+    @GetMapping("/auth/sort")
+    public String getSortPage(Model model, HttpSession session,
+                              @RequestParam(defaultValue = "asc", value = "sortOrder") String sortOrder,
+                              @RequestParam(required = false) String search,
+                              @RequestParam(defaultValue = "2", value = "size") int size,
+                              @RequestParam("type") String type) {
+        String email = (String) session.getAttribute("email");
+        User user = userService.findByEmail(email);
+        Page<File> files = fileService.getFilteredFiles(user, 0, size, search, sortOrder, type);
+        model.addAttribute("files", files.getContent());
+        model.addAttribute("currentPage", 0);
+        model.addAttribute("totalPages", files.getTotalPages());
+        model.addAttribute("sortOrder", sortOrder);
+        model.addAttribute("search", search);
+        model.addAttribute("type", type);
+        return "homepage/index";
+    }
+
+    @GetMapping("/auth/filter")
+    public String getFilterPage(Model model, HttpSession session,
+                                @RequestParam(defaultValue = "asc", value = "sortOrder") String sortOrder,
+                                @RequestParam(required = false) String search,
+                                @RequestParam(defaultValue = "2", value = "size") int size,
+                                @RequestParam("type") String type) {
+        String email = (String) session.getAttribute("email");
+        User user = userService.findByEmail(email);
+        Page<File> files = fileService.getFilteredFiles(user, 0, size, search, sortOrder, type);
+        model.addAttribute("files", files.getContent());
+        model.addAttribute("currentPage", 0);
+        model.addAttribute("totalPages", files.getTotalPages());
+        model.addAttribute("sortOrder", sortOrder);
+        model.addAttribute("search", search);
+        model.addAttribute("type", type);
         return "homepage/index";
     }
 }

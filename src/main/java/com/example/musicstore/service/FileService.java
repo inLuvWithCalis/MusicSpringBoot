@@ -8,6 +8,7 @@ import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -131,18 +132,63 @@ public class FileService {
         return this.fileRepository.findAllFilesByUser(user, pageable);
     }
 
-    private Specification<File> getFileNameSpecification(String name, User user) {
+    private Specification<File> getFileNameSpecification(String name, User user, String sortOrder) {
         return (root, query, cb) -> {
-            Predicate predicate = cb.conjunction();
-            predicate = cb.and(predicate, cb.like(root.get(File_.NAME), "%" + name + "%"));
-            predicate = cb.and(predicate, cb.equal(root.get(File_.USER), user));
+            assert query != null;
+            Predicate predicate = cb.and(
+                    cb.like(root.get(File_.NAME), "%" + name + "%"),
+                    cb.equal(root.get(File_.USER), user)
+            );
+            query.orderBy(sortOrder.equals("asc") ? cb.asc(root.get(File_.CREATED_AT)) : cb.desc(root.get(File_.CREATED_AT)));
             return predicate;
         };
     }
 
-    // fetch all items by user and name.
-    public Page<File> fetchAllByUser(User user, int page, int size, String name) {
-        Pageable pageable = PageRequest.of(page, size);
-        return this.fileRepository.findAll(getFileNameSpecification(name, user), pageable);
+    private Specification<File> getFileSpecificationSorting(User user, String sortOrder) {
+        return (root, query, cb) -> {
+            assert query != null;
+            query.orderBy(sortOrder.equals("asc") ? cb.asc(root.get(File_.CREATED_AT)) : cb.desc(root.get(File_.CREATED_AT)));
+            return cb.equal(root.get(File_.USER), user);
+        };
+    }
+
+    private Specification<File> getFileSpecificationTypeFilter(User user, String type, String sortOrder) {
+        return (root, query, cb) -> {
+            assert query != null;
+            Predicate predicate = cb.and(
+                    cb.like(root.get(File_.TYPE), "%" + type + "%"),
+                    cb.equal(root.get(File_.USER), user)
+            );
+            query.orderBy(sortOrder.equals("asc") ? cb.asc(root.get(File_.CREATED_AT)) : cb.desc(root.get(File_.CREATED_AT)));
+            return predicate;
+        };
+    }
+
+    private Specification<File> getFileSpecificationTypeAndNameFilter(User user, String type, String name, String sortOrder) {
+        return (root, query, cb) -> {
+            assert query != null;
+            Predicate predicate = cb.and(
+                    cb.like(root.get(File_.NAME), "%" + name + "%"),
+                    cb.equal(root.get(File_.USER), user),
+                    cb.like(root.get(File_.TYPE), "%" + type + "%")
+            );
+            query.orderBy(sortOrder.equals("asc") ? cb.asc(root.get(File_.CREATED_AT)) : cb.desc(root.get(File_.CREATED_AT)));
+            return predicate;
+        };
+    }
+
+    public Page<File> getFilteredFiles(User user, int page, int size, String searchName, String sortOrder,
+                                       String fileType) {
+        Pageable pageable = PageRequest.of(page, size, sortOrder.equals("asc") ?
+                Sort.by("createdAt").ascending() : Sort.by("createdAt").descending());
+        if (searchName != null && fileType != null) {
+            return this.fileRepository.findAll(getFileSpecificationTypeAndNameFilter(user, fileType, searchName, sortOrder), pageable);
+        } else if (searchName != null) {
+            return this.fileRepository.findAll(getFileNameSpecification(searchName, user, sortOrder), pageable);
+        } else if (fileType != null) {
+            return this.fileRepository.findAll(getFileSpecificationTypeFilter(user, fileType, sortOrder), pageable);
+        } else {
+            return this.fileRepository.findAll(getFileSpecificationSorting(user, sortOrder), pageable);
+        }
     }
 }
